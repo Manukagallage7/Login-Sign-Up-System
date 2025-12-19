@@ -48,11 +48,18 @@ if (isset($_POST['first_name']) &&
             $errorM = "Email is already registered.";
             header("Location: ../signup.php?error=$errorM");
         } else{
-            
+            $password= password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO users(first_name, last_name, email, password) VALUES(?,?,?,?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->execute([$first_name, $last_name, $email, $password]);
+
+            $successM = "User created successfully.";
+            header("Location: ../signup.php?success=$successM");
+
         }
     }
 
-    echo "User $first_name <br> $last_name <br> registered successfully with email $email.";
+    echo "<div class='success-message'>User $first_name $last_name registered successfully with email $email.</div>";
 } else {
     header("Location: ../signup.php");
 }
